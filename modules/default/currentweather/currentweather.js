@@ -23,6 +23,7 @@ Module.register("currentweather",{
 		showWindDirection: true,
 		showWindDirectionAsArrow: false,
 		useBeaufort: true,
+		appendLocationNameToHeader: false,
 		useKMPHwind: false,
 		lang: config.language,
 		decimalSymbol: ".",
@@ -41,8 +42,10 @@ Module.register("currentweather",{
 
 		appendLocationNameToHeader: true,
 		calendarClass: "calendar",
+		tableClass: "large",
 
 		onlyTemp: false,
+		hideTemp: false,
 		roundTemp: false,
 
 		iconTable: {
@@ -71,7 +74,7 @@ Module.register("currentweather",{
 	firstEvent: false,
 
 	// create a variable to hold the location name based on the API result.
-	fetchedLocatioName: "",
+	fetchedLocationName: "",
 
 	// Define required scripts.
 	getScripts: function() {
@@ -173,6 +176,7 @@ Module.register("currentweather",{
 	// Override dom generator.
 	getDom: function() {
 		var wrapper = document.createElement("div");
+		wrapper.className = this.config.tableClass;
 
 		if (this.config.appid === "") {
 			wrapper.innerHTML = "Please set the correct openweather <i>appid</i> in the config for module: " + this.name + ".";
@@ -191,11 +195,7 @@ Module.register("currentweather",{
 		}
 
 		var large = document.createElement("div");
-		large.className = "large light";
-
-		var weatherIcon = document.createElement("span");
-		weatherIcon.className = "wi weathericon " + this.weatherType;
-		large.appendChild(weatherIcon);
+		large.className = "light";
 
 		var degreeLabel = "";
 		if (this.config.units === "metric" || this.config.units === "imperial") {
@@ -219,10 +219,16 @@ Module.register("currentweather",{
 			this.config.decimalSymbol = ".";
 		}
 
-		var temperature = document.createElement("span");
-		temperature.className = "bright";
-		temperature.innerHTML = " " + this.temperature.replace(".", this.config.decimalSymbol) + degreeLabel;
-		large.appendChild(temperature);
+		if (this.config.hideTemp === false) {
+			var weatherIcon = document.createElement("span");
+			weatherIcon.className = "wi weathericon " + this.weatherType;
+			large.appendChild(weatherIcon);
+
+			var temperature = document.createElement("span");
+			temperature.className = "bright";
+			temperature.innerHTML = " " + this.temperature.replace(".", this.config.decimalSymbol) + degreeLabel;
+			large.appendChild(temperature);
+		}
 
 		if (this.config.showIndoorTemperature && this.indoorTemperature) {
 			var indoorIcon = document.createElement("span");
@@ -265,8 +271,12 @@ Module.register("currentweather",{
 
 	// Override getHeader method.
 	getHeader: function() {
-		if (this.config.appendLocationNameToHeader) {
-			return this.data.header + " " + this.fetchedLocatioName;
+		if (this.config.appendLocationNameToHeader && this.data.header !== undefined) {
+			return this.data.header + " " + this.fetchedLocationName;
+		}
+
+		if (this.config.useLocationAsHeader && this.config.location !== false) {
+			return this.config.location;
 		}
 
 		return this.data.header;
@@ -353,7 +363,7 @@ Module.register("currentweather",{
 		} else if(this.config.location) {
 			params += "q=" + this.config.location;
 		} else if (this.firstEvent && this.firstEvent.geo) {
-			params += "lat=" + this.firstEvent.geo.lat + "&lon=" + this.firstEvent.geo.lon
+			params += "lat=" + this.firstEvent.geo.lat + "&lon=" + this.firstEvent.geo.lon;
 		} else if (this.firstEvent && this.firstEvent.location) {
 			params += "q=" + this.firstEvent.location;
 		} else {
@@ -383,6 +393,7 @@ Module.register("currentweather",{
 
 		this.humidity = parseFloat(data.main.humidity);
 		this.temperature = this.roundValue(data.main.temp);
+		this.fetchedLocationName = data.name;
 		this.feelsLike = 0;
 
 		if (this.config.useBeaufort){

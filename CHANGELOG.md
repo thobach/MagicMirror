@@ -3,23 +3,174 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
----
+❤️ **Donate:** Enjoying MagicMirror²? [Please consider a donation!](https://magicmirror.builders/donate) With your help we can continue to improve the MagicMirror²
 
-## [2.7.0] - Unreleased
+## [2.11.0] - Unreleased (Develop Branch)
 
-*This release is scheduled to be released on 2019-04-01.*
+*This release is scheduled to be released on 2020-04-01.*
+
+### Deleted
+- Remove installers.
+- Remove externalized scripts.
+
+### Added
+- Ukrainian translation.
+- Finnish translation for "PRECIP", "UPDATE_INFO_MULTIPLE" and "UPDATE_INFO_SINGLE".
+- Added the ability to hide the temp label and weather icon in the `currentweather` module to allow showing only information such as wind and sunset/rise.
+- The `clock` module now optionally displays sun and moon data, including rise/set times, remaining daylight, and percent of moon illumination.
+- Added Hebrew translation.
+- Add HTTPS support and update config.js.sample
+- Run tests on long term support and latest stable version of nodejs
+- Added the ability to configure a list of modules that shouldn't be update checked.
+
+### Fixed
+- Force declaration of public ip adress in config file (ISSUE #1852)
+- Fixes `run-start.sh`: If running in docker-container, don't check the environment, just start electron (ISSUE #1859)
+- Fix calendar time offset for recurring events crossing Daylight Savings Time (ISSUE #1798)
+- Fix regression in currentweather module causing 'undefined' to show up when config.hideTemp is false
+- Fix FEELS translation for Croatian
+- Fixed weather tests [#1840](https://github.com/MichMich/MagicMirror/issues/1840)
+- Fix update checking skipping 3rd party modules the first time
+
+### Updated
+- Remove documentation from core repository and link to new dedicated docs site: [docs.magicmirror.builders](https://docs.magicmirror.builders).
+- Updated config.js.sample: Corrected some grammar on `config.js.sample` comment section.
+- Removed `run-start.sh` script and update start commands:
+  - To start using electron, use `npm run start`.
+  - To start in server only mode, use `npm run server`.
+- Timestamp in log output now also contains the date
+- Turkish translation.
+
+## [2.10.2] - 2020-02-21
+
+### Added
+- Option to configure the size of the currentweather module.
+
+## [2.10.1] - 2020-01-10
+
+### Changed
+- Updated README.md: Added links to the official documentation website and remove links to broken installer.
+
+## [2.10.0] - 2020-01-01
+
+Special thanks to @sdetweil for all his great contributions!
+
+ℹ️ **Note:** This update uses new dependencies. Please update using the following command: `git pull && npm install`.
+
+### Added
+- Timestamps in log output.
+- Padding in dateheader mode of the calendar module.
+- New upgrade script to help users consume regular updates installers/upgrade-script.sh.
+- New script to help setup pm2, without install installers/fixuppm2.sh.
+
+### Updated
+- Updated lower bound of `lodash` and `helmet` dependencies for security patches.
+- Updated compliments.js to handle newline in text, as textfields to not interpolate contents.
+- Updated raspberry.sh installer script to handle new platform issues, split node/npm, pm2, and screen saver changes.
+- Improve handling for armv6l devices, where electron support has gone away, add optional serveronly config option.
+- Improved run-start.sh to handle for serveronly mode, by choice, or when electron not available.
+- Only check for xwindows running if not on macOS.
+
+### Fixed
+- Fixed issue in weatherforecast module where predicted amount of rain was not using the decimal symbol specified in config.js.
+- Module header now updates correctly, if a module need to dynamically show/hide its header based on a condition.
+- Fix handling of config.js for serverOnly mode commented out.
+- Fixed issue in calendar module where the debug script didn't work correctly with authentication.
+- Fixed issue that some full day events were not correctly recognized as such.
+- Display full day events lasting multiple days as happening today instead of some days ago if they are still ongoing.
+
+## [2.9.0] - 2019-10-01
+
+ℹ️ **Note:** This update uses new dependencies. Please update using the following command: `git pull && npm install`. If you are having issues running Electron, make sure your [Raspbian is up to date](https://www.raspberrypi.org/documentation/raspbian/updating.md).
+
+### Added
+- Spanish translation for "PRECIP".
+- Adding a Malay (Malaysian) translation for MagicMirror².
+- Add test check URLs of vendors 200 and 404 HTTP CODE.
+- Add tests for new weather module and helper to stub ajax requests.
+
+### Updated
+- Updatenotification module: Display update notification for a limited (configurable) time.
+- Enabled e2e/vendor_spec.js tests.
+- The css/custom.css will be rename after the next release. We've add into `run-start.sh` a instruction by GIT to ignore with `--skip-worktree` and `rm --cached`. [#1540](https://github.com/MichMich/MagicMirror/issues/1540)
+- Disable sending of notification CLOCK_SECOND when displaySeconds is false.
+
+### Fixed
+- Updatenotification module: Properly handle race conditions, prevent crash.
+- Send `NEWS_FEED` notification also for the first news messages which are shown.
+- Fixed issue where weather module would not refresh data after a network or API outage. [#1722](https://github.com/MichMich/MagicMirror/issues/1722)
+- Fixed weatherforecast module not displaying rain amount on fallback endpoint.
+- Notifications CLOCK_SECOND & CLOCK_MINUTE being from startup instead of matched against the clock and avoid drifting.
+
+## [2.8.0] - 2019-07-01
+
+ℹ️ **Note:** This update uses new dependencies. Please update using the following command: `git pull && npm install`. If you are having issues running Electron, make sure your [Raspbian is up to date](https://www.raspberrypi.org/documentation/raspbian/updating.md).
+
+### Added
+- Option to show event location in calendar
+- Finnish translation for "Feels" and "Weeks"
+- Russian translation for “Feels”
+- Calendar module: added `nextDaysRelative` config option
+- Add `broadcastPastEvents` config option for calendars to include events from the past `maximumNumberOfDays` in event broadcasts
+- Added feature to broadcast news feed items `NEWS_FEED` and updated news items `NEWS_FEED_UPDATED` in default [newsfeed](https://github.com/MichMich/MagicMirror/tree/develop/modules/default/newsfeed) module (when news is updated) with documented default and `config.js` options in [README.md](https://github.com/MichMich/MagicMirror/blob/develop/modules/default/newsfeed/README.md)
+- Added notifications to default `clock` module broadcasting `CLOCK_SECOND` and `CLOCK_MINUTE` for the respective time elapsed.
+- Added UK Met Office Datapoint feed as a provider in the default weather module.
+- Added new provider class
+- Added suncalc.js dependency to calculate sun times (not provided in UK Met Office feed)
+- Added "tempUnits" and "windUnits" to allow, for example, temp in metric (i.e. celsius) and wind in imperial (i.e. mph). These will override "units" if specified, otherwise the "units" value will be used.
+- Use Feels Like temp from feed if present
+- Optionally display probability of precipitation (PoP) in current weather (UK Met Office data)
+- Automatically try to fix eslint errors by passing `--fix` option to it
+- Added sunrise and sunset times to weathergov weather provider [#1705](https://github.com/MichMich/MagicMirror/issues/1705)
+- Added "useLocationAsHeader" to display "location" in `config.js` as header when location name is not returned
+- Added to `newsfeed.js`: in order to design the news article better with css, three more class-names were introduced: newsfeed-desc, newsfeed-desc, newsfeed-desc
+
+### Updated
+- English translation for "Feels" to "Feels like"
+- Fixed the example calender url in `config.js.sample`
+- Update `ical.js` to solve various calendar issues.
+- Update weather city list url [#1676](https://github.com/MichMich/MagicMirror/issues/1676)
+- Only update clock once per minute when seconds aren't shown
+
+### Fixed
+- Fixed uncaught exception, race condition on module update
+- Fixed issue [#1696](https://github.com/MichMich/MagicMirror/issues/1696), some ical files start date to not parse to date type
+- Allowance HTML5 autoplay-policy (policy is changed from Chrome 66 updates)
+- Handle SIGTERM messages
+- Fixes sliceMultiDayEvents so it respects maximumNumberOfDays
+- Minor types in default NewsFeed [README.md](https://github.com/MichMich/MagicMirror/blob/develop/modules/default/newsfeed/README.md)
+- Fix typos and small syntax errors, cleanup dependencies, remove multiple-empty-lines, add semi-rule
+- Fixed issues with calendar not displaying one-time changes to repeating events
+- Updated the fetchedLocationName variable in currentweather.js so that city shows up in the header
+
+### Updated installer
+- give non-pi2+ users (pi0, odroid, jetson nano, mac, windows, ...) option to continue install
+- use current username vs hardcoded 'pi' to support non-pi install
+- check for npm installed. node install doesn't do npm anymore
+- check for mac as part of PM2 install, add install option string
+- update pm2 config with current username instead of hard coded 'pi'
+- check for screen saver config, "/etc/xdg/lxsession", bypass if not setup
+
+## [2.7.1] - 2019-04-02
+
+Fixed `package.json` version number.
+
+## [2.7.0] - 2019-04-01
 
 ℹ️ **Note:** This update uses new dependencies. Please update using the following command: `git pull && npm install`. If you are having issues running Electron, make sure your [Raspbian is up to date](https://www.raspberrypi.org/documentation/raspbian/updating.md).
 
 ### Added
 - Italian translation for "Feels"
-- Disabled the screensaver on raspbian with installation script 
+- Basic Klingon (tlhIngan Hol) translations
+- Disabled the screensaver on raspbian with installation script
 - Added option to truncate the number of vertical lines a calendar item can span if `wrapEvents` is enabled.
 - Danish translation for "Feels" and "Weeks"
 - Added option to split multiple day events in calendar to separate numbered events
 - Slovakian translation
 - Alerts now can contain Font Awesome icons
 - Notifications display time can be set in request
+- Newsfeed: added support for `ARTICLE_INFO_REQUEST` notification
+- Add `name` config option for calendars to be sent along with event broadcasts
 
 ### Updated
 - Bumped the Electron dependency to v3.0.13 to support the most recent Raspbian. [#1500](https://github.com/MichMich/MagicMirror/issues/1500)
@@ -42,6 +193,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Calendar: Fixed missing calendar fetchers after server process restarts [#1589](https://github.com/MichMich/MagicMirror/issues/1589)
 - Notification: fixed background color (was white text on white background)
 - Use getHeader instead of data.header when creating the DOM so overwriting the function also propagates into it
+- Fix documentation of `useKMPHwind` option in currentweather
 
 ### New weather module
 - Fixed weather forecast table display [#1499](https://github.com/MichMich/MagicMirror/issues/1499).
@@ -85,7 +237,6 @@ A huge, huge, huge thanks to user @fewieden for all his hard work on the new `we
 - Ignore entries with unparseable details in the calendar module
 - Bug showing FullDayEvents one day too long in calendar fixed
 - Bug in newsfeed when `removeStartTags` is used on the description [#1478](https://github.com/MichMich/MagicMirror/issues/1478)
-- Fix documentation of `useKMPHwind` option in currentweather
 
 ### Updated
 - The default calendar setting `showEnd` is changed to `false`.
